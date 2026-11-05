@@ -1,0 +1,6 @@
+/* Replica inputs ocultos e respectivos controles visíveis do portal. */
+input[type="radio"], .form-chosen { display: none; }
+.radio-options label, #pnlTomador > label { display: inline-block; padding: 10px; }
+.cr { display: inline-block; width: 16px; height: 16px; border: 1px solid gray; }
+.chosen-container { display: inline-block; min-width: 150px; padding: 10px; }
+[hidden] { display: none !important; }

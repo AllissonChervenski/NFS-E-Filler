@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163f3a">
+  <meta name="description" content="Preencha notas de hospedagem com as configurações do seu estabelecimento.">
+  <title>NFS-e · Hospedagem</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/dates.js" defer></script>
+  <script src="/hotel_form.js" defer></script>
+  <script src="/app.js" defer></script>
+  <script src="/hotel.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="NFS-e Hospedagem, início">
+      <span class="brand-mark" aria-hidden="true">N<span>↗</span></span>
+      <span>NFS-e<span class="brand-subtitle">HOSPEDAGEM</span></span>
+    </a>
+    <p class="nav-caption">SEU ESPAÇO DE TRABALHO</p>
+    <nav aria-label="Navegação principal">
+      <button type="button" class="nav-button active" id="nav-invoice" aria-current="page"><span aria-hidden="true">▤</span> Nova nota</button>
+      <button type="button" class="nav-button" id="nav-settings"><span aria-hidden="true">⚙</span> Configurações</button>
+    </nav>
+    <div class="sidebar-bottom"><span class="local-dot"></span> Aplicação local<p>Suas configurações ficam<br>neste computador.</p></div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><span>Assistente de preenchimento</span><span class="topbar-badge">Emissor Nacional NFS-e</span></header>
+    <main>
+      <div id="notice" role="alert" class="notice" hidden></div>
+      <section id="invoice-view" aria-labelledby="page-title">
+        <div class="page-heading"><div><p class="eyebrow">MENOS REPETIÇÃO, MAIS SIMPLICIDADE</p><h1 id="page-title">Uma nova hospedagem.<br>Uma nota pronta para revisar.</h1><p class="lead">Informe os dados da estadia. As configurações do estabelecimento já estão aqui.</p></div><span class="document-symbol" aria-hidden="true">↗</span></div>
+        <div class="invoice-layout">
+          <div class="main-column">
+            <details class="card hotel-card" id="hotel-panel">
+              <summary>Buscar no Desbravador pelo quarto <span class="pill">Opcional</span></summary>
+              <p class="helper">Use quando quiser importar uma hospedagem. Você pode continuar preenchendo a nota manualmente.</p>
+              <div class="hotel-actions">
+                <button type="button" class="button secondary" id="hotel-open">Abrir Desbravador ↗</button>
+                <button type="button" class="button secondary" id="hotel-inspect">Inspecionar tela</button>
+                <button type="button" class="text-button" id="hotel-download" hidden>Baixar diagnóstico</button>
+              </div>
+              <form id="hotel-lookup" class="hotel-actions" autocomplete="off">
+                <label>Quarto / UH <input name="room" id="hotel-room" maxlength="20" placeholder="Ex.: 02"></label>
+                <button type="submit" class="button primary" id="hotel-search">Consultar quarto</button>
+              </form>
+              <p class="helper" id="hotel-status" role="status" aria-live="polite">Consulta por quarto opcional.</p>
+              <div id="hotel-preview" hidden>
+                <dl id="hotel-details" class="fixed-summary"></dl>
+                <label class="hotel-option"><input type="checkbox" id="hotel-keep-document"> Manter o CPF/CNPJ do tomador já informado na próxima busca</label>
+                <p class="helper">A sugestão de documento pode ser trocada pelo CNPJ da empresa. Competência e configurações fiscais são mantidas.</p>
+                <button type="button" class="button primary" id="hotel-apply">Aplicar ao formulário</button>
+              </div>
+              <details class="mapping-card">
+                <summary>Conexão e mapeamento do Desbravador</summary>
+                <p class="helper">O padrão já está configurado para a edição de hospedagens do Light Web. O nome e o CPF do titular são sugestões editáveis no nosso formulário. Use a inspeção se a estrutura da tela mudar.</p>
+                <form id="hotel-config">
+                  <label>Endereço de acesso do hotel <input name="login_url" id="hotel-login-url" type="url" required></label>
+                  <div class="form-grid" id="hotel-mapping"></div>
+                  <p class="helper">O padrão Light Web identifica o número exibido no card, sem confundi-lo com o ID interno. Para um seletor personalizado, use {room}. CPF em branco usa a ficha correspondente ao titular. Nenhum botão de salvar ou fechar conta é acionado.</p>
+                  <button type="submit" class="button secondary" id="hotel-save">Salvar mapeamento</button>
+                </form>
+              </details>
+            </details>
+            <form id="invoice-form" class="card" autocomplete="off">
+              <div class="card-heading"><span class="section-number">01</span><div><h2>Dados da hospedagem</h2><p>Informações que mudam a cada nota.</p></div></div>
+              <div class="form-grid">
+                <label class="full">Nome do hóspede <input name="guest_name" id="guest-name" required maxlength="200" placeholder="Nome completo do hóspede"></label>
+                <label>CPF/CNPJ do tomador <input name="customer_document" required maxlength="18" autocapitalize="characters" spellcheck="false" placeholder="CPF ou CNPJ"><small>Quem contrata ou paga a hospedagem.</small></label>
+                <label>Data de competência <input name="competence" id="competence" type="date" required><small>Data informada na etapa Pessoas.</small></label>
+                <label>Check-in <input name="check_in" id="check-in" type="text" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" required></label>
+                <label>Check-out <input name="check_out" id="check-out" type="text" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" required></label>
+                <label class="full">Valor total da hospedagem <span class="money-input"><span>R$</span><input name="service_value" id="service-value" inputmode="decimal" required placeholder="0,00" maxlength="20"></span></label>
+              </div>
+              <div class="form-footer"><span>Confira os dados antes de preencher o portal.</span><button class="button primary" type="submit">Preparar preenchimento <span aria-hidden="true">→</span></button></div>
+            </form>
+
+            <section class="card portal-card" aria-labelledby="portal-title">
+              <div class="card-heading"><span class="section-number">02</span><div><h2 id="portal-title">Preencher no portal</h2><p>Entre na sua conta e acompanhe cada etapa.</p></div></div>
+              <ol class="instructions"><li>Abra o portal e faça login na janela do assistente.</li><li>Selecione <strong>Nova NFS-e → Emissão Completa</strong>.</li><li>Preencha a etapa aberta, confira e clique em <strong>Avançar</strong> no portal.</li></ol>
+              <button type="button" class="button secondary" id="open-portal">Abrir portal <span aria-hidden="true">↗</span></button>
+              <button type="button" class="button secondary" id="inspect-portal">Inspecionar campos</button>
+              <button type="button" class="text-button" id="download-diagnostics" hidden>Baixar diagnóstico dos campos</button>
+              <div class="step-buttons" aria-label="Etapas do preenchimento">
+                <button type="button" data-step="people" disabled><span>1</span><strong>Pessoas</strong><small>Preencher etapa</small></button>
+                <button type="button" data-step="service" disabled><span>2</span><strong>Serviço</strong><small>Preencher etapa</small></button>
+                <button type="button" data-step="values" disabled><span>3</span><strong>Valores</strong><small>Preencher etapa</small></button>
+              </div>
+              <p class="helper" id="prepare-hint">Prepare os dados da hospedagem para habilitar as etapas.</p>
+              <div id="automation-status" class="automation-status" role="status" aria-live="polite"><span class="status-dot"></span><div><p id="status-message">Portal ainda não aberto.</p><ul id="completed-fields" hidden></ul></div></div>
+              <p class="review-note">A emissão é feita por você, após revisar a nota no portal.</p>
+            </section>
+          </div>
+
+          <aside class="summary-column" aria-label="Prévia da nota">
+            <section class="card summary-card">
+              <div class="summary-heading"><p class="eyebrow">PRÉVIA DA NOTA</p><span class="pill" id="preview-state">Rascunho</span></div>
+              <p class="total-label">Valor do serviço</p><p class="total" id="preview-amount">R$ 0,00</p>
+              <div class="summary-dates"><div><span>Entrada</span><strong id="preview-in">—</strong></div><span class="date-arrow" aria-hidden="true">→</span><div><span>Saída</span><strong id="preview-out">—</strong></div></div>
+              <div class="description-heading"><h3>Descrição do serviço</h3><button type="button" class="text-button" id="copy-description" disabled>Copiar</button></div>
+              <p class="service-description" id="preview-description">O nome do hóspede e as datas da estadia compõem a descrição automaticamente.</p>
+              <div class="fixed-summary"><div><span>Local da prestação</span><strong id="summary-municipality">—</strong></div><div><span>Tributação nacional</span><strong id="summary-national">—</strong></div><div><span>Simples Nacional</span><strong id="summary-rate">—</strong></div></div>
+              <button type="button" class="text-button settings-link" id="edit-settings">Editar configurações <span aria-hidden="true">→</span></button>
+            </section>
+            <p class="summary-footnote">Padrões baseados no roteiro de preenchimento do estabelecimento.</p>
+          </aside>
+        </div>
+        <section id="review-details" class="card review-details" hidden><div class="card-heading"><span class="section-number">03</span><div><h2>Conferência dos campos</h2><p>Dados preparados para as três etapas do Emissor Nacional.</p></div><button type="button" class="button secondary" id="copy-all">Copiar resumo</button></div><div id="review-content"></div></section>
+      </section>
+
+      <section id="settings-view" aria-labelledby="settings-title" hidden>
+        <div class="page-heading"><div><p class="eyebrow">PADRÕES DO ESTABELECIMENTO</p><h1 id="settings-title">Configure uma vez.<br>Reutilize a cada nota.</h1><p class="lead">A última configuração salva será carregada quando você abrir o sistema.</p></div></div>
+        <form id="settings-form">
+          <div id="settings-fields"></div>
+          <details class="card mapping-card"><summary>Mapeamento avançado do portal</summary><p class="helper">Use somente se o assistente não localizar um campo ou encontrar rótulos repetidos. Informe um seletor CSS específico do input, select, textarea ou grupo de opções. Exemplo: <code>#idDoCampo</code>. Em branco, o assistente procura pelo rótulo.</p><p class="helper">O roteiro repete “Código de Situação Tributária” para 000 e 000001. Confira os dois controles e configure seletores distintos quando necessário.</p><div class="form-grid" id="selector-fields"></div></details>
+          <div class="settings-actions"><span id="save-status" role="status">Carregando configurações…</span><button type="submit" class="button primary" id="save-settings">Salvar configurações <span aria-hidden="true">✓</span></button></div>
+        </form>
+      </section>
+      <footer class="page-footer"><span>NFS-e · Hospedagem</span><span>Preenchimento com revisão humana.</span></footer>
+    </main>
+  </div>
+</body>
+</html>

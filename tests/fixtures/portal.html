@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR"><meta charset="utf-8"><title>Formulário fictício NFS-e</title>
+<link rel="stylesheet" href="/fixture.css">
+<body>
+<!-- Estrutura mínima reproduzida do portal, sem sessão ou dados pessoais. -->
+<form>
+<div id="pnlInfoIBSCBS" class="form-group">
+  <label class="control-label"><span>Preencher as informações IBS/CBS?<span>*</span></span></label>
+  <div class="radio-options">
+    <div class="radiobutton"><label><input id="PreencherInfoIBSCBS" name="PreencherInfoIBSCBS" type="radio" value="1">Sim<span class="cr"></span></label></div>
+    <div class="radiobutton"><label><input id="PreencherInfoIBSCBS" name="PreencherInfoIBSCBS" type="radio" value="0">Não<span class="cr"></span></label></div>
+  </div>
+</div>
+<div class="form-group"><label>Data de Competência<span>*</span><a role="button"><i></i></a></label>
+  <div class="input-group"><input id="DataCompetencia" name="DataCompetencia" type="text"><button type="button">Calendário</button></div>
+</div>
+<div class="form-group"><label>Regime de Apuração dos Tributos no Simples Nacional<span>*</span></label>
+  <select class="form-chosen" id="SimplesNacional_RegimeApuracaoTributosSN" name="SimplesNacional.RegimeApuracaoTributosSN"><option value="">Selecione...</option><option value="1">Regime de apuração dos tributos federais e municipal pelo Simples Nacional</option></select>
+  <div class="chosen-container"><a class="chosen-single">Selecione...</a></div>
+</div>
+<div class="form-group"><label>A operação se trata de uma compra governamental?<span>*</span></label>
+  <div class="radio-options">
+    <label><input id="EhCompraGovernamental" name="EhCompraGovernamental" type="radio" value="1" disabled>Sim<span class="cr"></span></label>
+    <label><input id="EhCompraGovernamental" name="EhCompraGovernamental" type="radio" value="0" disabled>Não<span class="cr"></span></label>
+  </div>
+</div>
+<div id="pnlTomador" class="form-group"><label>CPF/CNPJ<span>*</span></label>
+  <div class="input-group"><input id="Tomador_Inscricao" name="Tomador.Inscricao"><button type="button">Pesquisar</button></div>
+  <label><input name="Tomador.LocalDomicilio" type="radio" value="1" checked>Brasil<span class="cr"></span></label>
+</div>
+<div hidden><label>CPF/CNPJ</label><input id="Destinatario_Inscricao" name="Destinatario.Inscricao"></div>
+<div class="form-group"><label>Para fins de apuração do IBS/CBS, o destinatário é o próprio adquirente?<span>*</span></label>
+  <div class="radio-options"><label><input name="DestinatarioEhOAdquirente" type="radio" value="1" disabled>Sim<span class="cr"></span></label><label><input name="DestinatarioEhOAdquirente" type="radio" value="0" disabled>Não<span class="cr"></span></label></div>
+</div>
+<div id="pnlIntermediario" class="form-group"><label>Onde está localizado o estabelecimento/domicílio?<span>*</span></label>
+  <div class="radio-options"><label><input id="Intermediario_LocalDomicilio" name="Intermediario.LocalDomicilio" type="radio" value="1" disabled>Brasil<span class="cr"></span></label><label><input id="Intermediario_LocalDomicilio" name="Intermediario.LocalDomicilio" type="radio" value="0" disabled>Intermediário não informado<span class="cr"></span></label></div>
+</div>
+<label>País da prestação</label><select class="form-chosen" name="LocalPrestacao.CodigoPaisPrestacao"><option value="">Escolha</option><option value="BR">Brasil</option></select><div class="chosen-container">País</div>
+<label>Município da prestação</label><select name="LocalPrestacao.CodigoMunicipioPrestacao"><option value="">Escolha</option><option value="4300406">Alegrete - RS</option></select>
+<label>Código de Tributação Nacional</label><select id="national" name="ServicoPrestado.CodigoTributacaoNacional" disabled><option value="">Escolha</option><option value="hospitality">09.01.01 - Hospedagem em hotéis</option></select>
+<label>Código Complementar Municipal</label><select name="ServicoPrestado.CodigoComplementarMunicipal"><option value="">Escolha</option><option value="090101001">090101001</option></select>
+<label><input type="radio" name="ServicoPrestado.HaExportacaoImunidadeNaoIncidencia" value="0">Não<span class="cr"></span></label><label><input type="radio" name="ServicoPrestado.HaExportacaoImunidadeNaoIncidencia" value="1">Sim<span class="cr"></span></label>
+<label>Item da NBS</label><select class="form-chosen" name="ServicoPrestado.CodigoNBS"><option value="">Escolha</option><option value="103042000">1.0304.20.00 - Hospedagem</option></select><div class="chosen-container">NBS</div>
+<label>Código indicador da operação</label><select name="ServicoPrestado.CodigoIndOp"><option value="">Escolha</option><option value="030101">030101 - Operação</option></select>
+<label>Descrição do Serviço/Fornecimento</label><textarea id="description" name="ServicoPrestado.Descricao" readonly></textarea>
+<label>Valor da operação/serviço prestado</label><input id="amount" name="Valores.ValorServico">
+<label><input type="radio" name="ISSQN.HaSuspensao" value="0" disabled checked>Não<span class="cr"></span></label><label><input type="radio" name="ISSQN.HaSuspensao" value="1" disabled>Sim<span class="cr"></span></label>
+<label><input type="radio" name="ISSQN.HaRetencao" value="0">Não<span class="cr"></span></label><label><input type="radio" name="ISSQN.HaRetencao" value="1">Sim<span class="cr"></span></label>
+<label><input type="radio" name="ISSQN.HaBeneficioMunicipal" value="0" disabled checked>Não<span class="cr"></span></label><label><input type="radio" name="ISSQN.HaBeneficioMunicipal" value="1" disabled>Sim<span class="cr"></span></label>
+<label>Código de Situação Tributária</label><select id="pis" name="TributacaoFederal.PISCofins.SituacaoTributaria"><option value="">Escolha</option><option value="000">000 - Outro grupo</option></select>
+<label>Código de Situação Tributária</label><select id="cst" name="ValorTributos.CodigoSituacaoTributaria"><option value="">Escolha</option><option value="cst000">000 - Tributação</option></select>
+<label>Código de Situação Tributária</label><select id="classification" name="ValorTributos.CodigoClassificacaoTributaria"><option value="">Escolha</option><option value="class000001">000001 - Classificação</option></select>
+<label><input type="radio" name="ValorTributos.TipoValorTributos" value="1">Preencher os valores monetários em cada NFS-e emitida<span class="cr"></span></label>
+<label><input type="radio" name="ValorTributos.TipoValorTributos" value="4">Informar alíquota do Simples Nacional<span class="cr"></span></label>
+<input name="ValorTributos.AliquotaSN" hidden>
+<label for="duplicate1">Município</label><input id="duplicate1">
+<label for="duplicate2">Município</label><input id="duplicate2">
+<label for="country">País</label><input id="country" role="combobox" aria-controls="country-options">
+<div id="country-options" role="listbox" hidden><div role="option" id="brazil">Brasil</div></div>
+<button id="emit" type="button">Emitir NFS-e</button>
+</form>
+<script src="/fixture.js"></script>
+</body></html>
