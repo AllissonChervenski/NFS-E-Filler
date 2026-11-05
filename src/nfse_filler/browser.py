@@ -10,6 +10,7 @@ import re
 import shutil
 import socket
 import subprocess
+import sys
 import threading
 import time
 from pathlib import Path
@@ -108,7 +109,14 @@ class ChromeSession:
                 return
             except BrowserError:
                 self.close()
-        driver = os.environ.get("NFSE_CHROMEDRIVER") or shutil.which("chromedriver")
+        bundle_dir = Path(sys.executable).resolve().parent
+        bundled_driver = bundle_dir / "ChromeDriver" / "chromedriver-win64" / "chromedriver.exe"
+        bundled_browser = bundle_dir / "Browser" / "chrome-win64" / "chrome.exe"
+        driver = (
+            os.environ.get("NFSE_CHROMEDRIVER")
+            or (str(bundled_driver) if bundled_driver.is_file() else None)
+            or shutil.which("chromedriver")
+        )
         if not driver:
             raise BrowserError(
                 "ChromeDriver não encontrado. Instale Chrome/Chromium e ChromeDriver compatíveis "
@@ -150,7 +158,12 @@ class ChromeSession:
                     "profile.password_manager_enabled": False,
                 },
             }
-            binary = os.environ.get("NFSE_BROWSER_BINARY") or shutil.which("chromium")
+            binary = (
+                os.environ.get("NFSE_BROWSER_BINARY")
+                or (str(bundled_browser) if bundled_browser.is_file() else None)
+                or shutil.which("chromium")
+                or shutil.which("chrome")
+            )
             if binary:
                 options["binary"] = binary
             result = self.request(

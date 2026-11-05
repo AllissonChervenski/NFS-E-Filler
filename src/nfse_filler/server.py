@@ -26,6 +26,19 @@ STATIC = Path(__file__).parent / "static"
 MAX_BODY = 64 * 1024
 
 
+def default_data_directory():
+    """Guarda configurações e perfis em uma pasta gravável do usuário."""
+    if not getattr(sys, "frozen", False):
+        return Path(os.environ.get("NFSE_DATA_DIR", "data"))
+    if sys.platform == "win32":
+        root = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
+    elif sys.platform == "darwin":
+        root = Path.home() / "Library/Application Support"
+    else:
+        root = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+    return root / "NfseFiller"
+
+
 class Application:
     def __init__(self, directory):
         self.store = SettingsStore(directory)
@@ -194,7 +207,7 @@ def main():
     parser = argparse.ArgumentParser(description="Assistente local de NFS-e para hospedagens")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument(
-        "--data-dir", type=Path, default=Path(os.environ.get("NFSE_DATA_DIR", "data"))
+        "--data-dir", type=Path, default=default_data_directory()
     )
     parser.add_argument(
         "--no-open", action="store_true", help="Não abrir a interface automaticamente"

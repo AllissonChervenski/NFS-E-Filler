@@ -6,6 +6,7 @@ seguindo [preenchimento.md](preenchimento.md).
 ## Índice
 
 - [Iniciar](#iniciar)
+- [Pacote Windows sem instalação](#pacote-windows-sem-instalação)
 - [Usar](#usar)
 - [Configurações e dados locais](#configurações-e-dados-locais)
   - [Desbravador Light Web](#desbravador-light-web--consulta-opcional-por-quarto)
@@ -39,6 +40,36 @@ NFSE_BROWSER_BINARY=/usr/bin/chromium NFSE_CHROMEDRIVER=/usr/bin/chromedriver py
 Consulte a [documentação oficial do ChromeDriver](https://developer.chrome.com/docs/chromedriver/get-started)
 para instalação em outras máquinas. Não é necessário instalar Playwright, Selenium,
 Node.js ou pacotes Python para executar o aplicativo.
+
+## Pacote Windows sem instalação
+
+O ZIP para Windows inclui o executável, Chrome for Testing e a versão correspondente
+do ChromeDriver. No computador de destino, extraia o arquivo e execute
+`NfseFiller.exe`; não é preciso instalar Python, Chrome ou bibliotecas. O primeiro
+empacotamento precisa ser feito em Windows x64 com Python 3.11+ e acesso à internet.
+
+No PowerShell, dentro da cópia do projeto:
+
+```powershell
+.\scripts\build-windows.ps1
+```
+
+O script prepara um ambiente temporário de build, baixa as versões estáveis
+compatíveis do Chrome for Testing e ChromeDriver e grava
+`dist/NfseFiller-Windows-x64.zip`. O pacote inclui os arquivos de licença entregues
+com o navegador. O navegador não atualiza sozinho; gere e distribua um pacote novo
+para atualizar o par Chrome/ChromeDriver. A página [Chrome for Testing](https://googlechromelabs.github.io/chrome-for-testing/)
+publica os downloads e versões pareadas para automação.
+
+O workflow do GitHub Actions também gera o ZIP a cada push para `main` ou quando
+executado manualmente. Baixe `NfseFiller-Windows-x64` nos artefatos da execução;
+ele fica disponível por 14 dias.
+
+Configurações, perfil do navegador e dados do Desbravador ficam em
+`%LOCALAPPDATA%\NfseFiller`, fora da pasta do aplicativo. O executável mantém uma
+janela de console aberta; feche essa janela para encerrar o assistente. O pacote
+Windows deve ser gerado no Windows, pois o PyInstaller cria executáveis para o
+sistema onde é executado.
 
 ## Usar
 
