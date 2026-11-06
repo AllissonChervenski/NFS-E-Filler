@@ -1,6 +1,6 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {holderIdentity, canonicalRoom} = require('../src/nfse_filler/static/desbravador_data.js');
+const {holderIdentity, canonicalRoom, roomToken, matchesRoomLabel} = require('../src/nfse_filler/static/desbravador_data.js');
 
 test('uses the holder ID instead of blindly copying the first guest document', () => {
   const result = holderIdentity({id: '20', name: 'Titular de Teste'}, [
@@ -23,4 +23,11 @@ test('separates explicit document suffixes from the holder name', () => {
     {name: 'Titular de Teste', document: '529.982.247-25'});
   assert.equal(canonicalRoom('02'), canonicalRoom('2'));
   assert.notEqual(canonicalRoom('02A'), canonicalRoom('02B'));
+});
+
+test('finds a room number in a UH label without using unrelated numbers', () => {
+  assert.equal(roomToken('UH 001 OCUPADA'), '001');
+  assert.equal(matchesRoomLabel('Quarto: 01', '1'), true);
+  assert.equal(matchesRoomLabel('02 - Ocupada', '001'), false);
+  assert.equal(matchesRoomLabel('Hóspede 01', '1'), false);
 });

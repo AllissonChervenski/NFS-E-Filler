@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "NFS-e Hospedagem",
+  "version": "0.1.0",
+  "description": "Consulta hospedagens no Desbravador e preenche a NFS-e no Chrome atual.",
+  "permissions": ["sidePanel", "scripting", "storage"],
+  "host_permissions": [
+    "https://desbravadorweb.com.br/*",
+    "https://www.nfse.gov.br/EmissorNacional/*"
+  ],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_title": "NFS-e Hospedagem"},
+  "side_panel": {"default_path": "panel.html"}
+}

@@ -283,7 +283,9 @@ class Desbravador:
                         message="Hospedagem consultada. Confira os dados importados e ajuste o tomador se necessário.",
                     )
                     return
-                elif result["status"] not in {"not_ready", "loading"}:
+                elif result["status"] not in {
+                    "not_ready", "loading", "opening_card", "opening_statement"
+                }:
                     raise BrowserError(self.describe(result))
                 time.sleep(0.2)
             raise BrowserError(
@@ -307,6 +309,7 @@ class Desbravador:
             "ambiguous": "O seletor encontrou mais de um resultado. Refine a área e o mapeamento da hospedagem.",
             "invalid_selector": "Seletor CSS inválido no mapeamento do Desbravador.",
             "wrong_room": "O quarto aberto difere do solicitado. Abra o mapa ou o quarto correto.",
+            "card_not_opened": "Não foi possível abrir o menu do quarto no mapa de UH.",
             "missing": "Campo não identificado na hospedagem. Confira o mapeamento após inspecionar a tela.",
         }.get(result.get("status"), "Não foi possível ler os dados da hospedagem.")
 

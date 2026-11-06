@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NFS-e · Hospedagem</title>
+  <link rel="stylesheet" href="panel.css">
+  <script src="runtime/metadata.js" defer></script>
+  <script src="runtime/dates.js" defer></script>
+  <script src="runtime/hotel_form.js" defer></script>
+  <script src="domain.js" defer></script>
+  <script src="panel.js" defer></script>
+</head>
+<body>
+  <header class="header"><div class="brand">N<span>↗</span></div><div><strong>NFS-e · Hospedagem</strong><small>Assistente no Chrome</small></div></header>
+  <nav class="tabs"><button id="tab-note" class="active" type="button">Nova nota</button><button id="tab-settings" type="button">Configurações</button></nav>
+  <main>
+    <p id="notice" role="alert" hidden></p>
+    <section id="note-view">
+      <h1>Uma nova hospedagem.</h1><p class="lead">Busque pelo quarto ou preencha manualmente.</p>
+      <details class="card" open><summary>Buscar no Desbravador <span class="pill">Opcional</span></summary>
+        <p class="hint">Use a sessão já aberta no Chrome. A consulta usa uma aba temporária em segundo plano.</p>
+        <form id="lookup-form"><label>Quarto / UH<input name="room" id="room" placeholder="Ex.: 02" maxlength="20"></label><button class="primary">Consultar quarto</button></form>
+        <button id="open-hotel" class="text-button" type="button">Abrir Desbravador ↗</button><button id="inspect-hotel" class="text-button" type="button">Inspecionar tela</button><button id="download-hotel" class="text-button" type="button" hidden>Baixar diagnóstico</button>
+        <div id="hotel-preview" hidden><dl id="hotel-details"></dl><label class="check"><input type="checkbox" id="keep-document">Manter CPF/CNPJ do tomador informado</label><button id="apply-hotel" type="button">Aplicar dados</button></div>
+      </details>
+      <form id="invoice-form" class="card" autocomplete="off"><h2>Dados da hospedagem</h2>
+        <label>Nome do hóspede<input name="guest_name" required maxlength="200"></label>
+        <label>CPF/CNPJ do tomador<input name="customer_document" required maxlength="18"></label>
+        <label>Data de competência<input name="competence" type="date" required></label>
+        <div class="pair"><label>Check-in<input name="check_in" inputmode="numeric" placeholder="dd/mm/aaaa" required></label><label>Check-out<input name="check_out" inputmode="numeric" placeholder="dd/mm/aaaa" required></label></div>
+        <label>Valor das diárias (R$)<input name="service_value" inputmode="decimal" placeholder="0,00" required></label>
+        <button class="primary">Preparar preenchimento</button>
+      </form>
+      <section id="review" class="card" hidden><h2>Prévia da nota</h2><p id="description"></p><p id="amount" class="amount"></p><p class="hint">Confira os dados antes de preencher cada etapa.</p></section>
+      <section class="card"><h2>Preencher NFS-e</h2><p class="hint">Abra a Emissão Completa na aba normal do Chrome. Confira cada etapa e avance no portal.</p>
+        <button id="open-portal" type="button">Abrir portal ↗</button><button id="inspect" type="button">Inspecionar campos</button><button id="download" type="button" hidden>Baixar diagnóstico</button>
+        <div class="steps"><button type="button" data-step="people" disabled>Pessoas</button><button type="button" data-step="service" disabled>Serviço</button><button type="button" data-step="values" disabled>Valores</button></div>
+        <p id="status" role="status">Prepare a nota para habilitar as etapas.</p><ul id="completed"></ul>
+      </section>
+    </section>
+    <section id="settings-view" hidden><h1>Configurações</h1><p class="lead">Padrões do estabelecimento e mapeamento.</p>
+      <form id="settings-form" class="card"><div id="settings-fields"></div><details><summary>Mapeamento avançado da NFS-e</summary><div id="selectors-fields"></div></details><button class="primary">Salvar configurações</button></form>
+      <form id="hotel-config" class="card"><h2>Desbravador</h2><label>Endereço de acesso<input name="login_url" type="url" required></label><details><summary>Mapeamento dos campos</summary><div id="hotel-fields"></div></details><button>Salvar mapeamento</button></form>
+      <div class="card"><h2>Importar da página antiga</h2><p class="hint">Selecione o settings.json e, se existir, o desbravador.json. A importação substitui as configurações correspondentes da extensão.</p><label>Configurações NFS-e<input id="import-settings" type="file" accept=".json,application/json"></label><label>Mapeamento Desbravador<input id="import-hotel" type="file" accept=".json,application/json"></label></div>
+    </section>
+  </main>
+</body>
+</html>

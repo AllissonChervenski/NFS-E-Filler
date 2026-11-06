@@ -16,6 +16,15 @@ const NFSeDesbravadorData = (() => {
   }
   const canonicalRoom = raw => /^[0-9]+$/.test(String(raw).trim())
     ? String(raw).trim().replace(/^0+(?=[0-9])/, '') : String(raw).trim().toUpperCase();
-  return {holderIdentity, canonicalRoom};
+  const roomToken = raw => {
+    const text = String(raw || '').replace(/\s+/g, ' ').trim().toUpperCase();
+    const match = text.match(/^(?:(?:UH|QUARTO|APTO|APARTAMENTO)\s*(?:N[º°.]*)?\s*[:#-]?\s*)?([0-9]{1,5}[A-Z]?)(?=$|[\s:;,.()\-–])/);
+    return match?.[1] || '';
+  };
+  const matchesRoomLabel = (raw, requested) => {
+    const token = roomToken(raw);
+    return !!token && canonicalRoom(token) === canonicalRoom(requested);
+  };
+  return {holderIdentity, canonicalRoom, roomToken, matchesRoomLabel};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = NFSeDesbravadorData;

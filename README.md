@@ -6,6 +6,7 @@ seguindo [preenchimento.md](preenchimento.md).
 ## Índice
 
 - [Iniciar](#iniciar)
+- [Extensão do Chrome](#extensão-do-chrome)
 - [Pacote Windows sem instalação](#pacote-windows-sem-instalação)
 - [Usar](#usar)
 - [Configurações e dados locais](#configurações-e-dados-locais)
@@ -40,6 +41,40 @@ NFSE_BROWSER_BINARY=/usr/bin/chromium NFSE_CHROMEDRIVER=/usr/bin/chromedriver py
 Consulte a [documentação oficial do ChromeDriver](https://developer.chrome.com/docs/chromedriver/get-started)
 para instalação em outras máquinas. Não é necessário instalar Playwright, Selenium,
 Node.js ou pacotes Python para executar o aplicativo.
+
+## Extensão do Chrome
+
+A pasta [`extension/`](extension/) contém uma versão que roda no Chrome normal,
+sem iniciar Python, ChromeDriver ou uma janela de navegador separada. Para instalar:
+
+1. Baixe e extraia o repositório no computador Windows.
+2. Abra `chrome://extensions`, ative **Modo do desenvolvedor** e clique em
+   **Carregar sem compactação**. Escolha a pasta `extension` extraída.
+3. Clique no ícone **NFS-e Hospedagem** para abrir o painel lateral. Entre no
+   Desbravador e no Emissor Nacional nas abas normais do Chrome.
+4. Informe um quarto no painel e clique em **Consultar quarto**. A extensão abre
+   o mapa em uma aba temporária, aguarda os cards carregarem,
+   abre o quarto, passa por **Extrato de Conta** e acessa a edição da hospedagem.
+   Depois lê o titular, CPF, datas e total das diárias e fecha essa aba. Confira o nome
+   e troque o CPF pelo CNPJ do tomador se necessário.
+5. Prepare a nota no painel. Com a etapa correta da Emissão Completa aberta em
+   uma única aba, clique em **Pessoas**, **Serviço** ou **Valores**. Confira e
+   avance no portal; a emissão final continua manual.
+
+O campo do quarto é opcional. O painel oferece inspeção estrutural das telas e
+mapeamento avançado. Para trazer configurações da página antiga, abra
+**Configurações → Importar da página antiga** e selecione `data/settings.json`;
+se existir, importe também `data/desbravador.json`. A extensão guarda uma cópia
+em `chrome.storage.local`, sem sincronização automática com a página antiga.
+Dados da hospedagem consultada ficam na sessão do painel. Senhas e cookies são
+administrados pelo próprio Chrome. A versão web (`python run.py`) continua
+disponível separadamente. A aba temporária começa em segundo plano; se o menu do
+quarto exigir foco, a extensão a ativa por alguns instantes e volta à aba anterior.
+
+Ao alterar mapeamentos compartilhados no código, atualize os arquivos incluídos
+na extensão com `python scripts/build_extension.py` antes de distribuir a pasta.
+Depois de substituir os arquivos da extensão, clique em **Recarregar** em
+`chrome://extensions` antes de consultar outro quarto.
 
 ## Pacote Windows sem instalação
 

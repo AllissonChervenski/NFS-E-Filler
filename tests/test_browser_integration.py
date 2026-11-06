@@ -374,10 +374,15 @@ def test_lightweb_room_id_is_not_room_number_and_holder_is_not_first_guest(brows
     browser, origin, app = browser_app
     browser.navigate(origin + "/hotel-lightweb")
     selectors = defaults()["selectors"]
-    assert (
-        browser.execute(app.desbravador.script, "locate", selectors, "02", origin)["status"]
-        == "located"
-    )
+    assert browser.execute(app.desbravador.script, "locate", selectors, "02", origin)[
+        "status"
+    ] == "opening_card"
+    assert browser.execute(app.desbravador.script, "locate", selectors, "02", origin)[
+        "status"
+    ] == "opening_statement"
+    assert browser.execute(app.desbravador.script, "locate", selectors, "02", origin)[
+        "status"
+    ] == "located"
     result = browser.execute(app.desbravador.script, "read", selectors, "02", origin)
     assert result["status"] == "read"
     data = normalize_stay(result["data"], "02")
