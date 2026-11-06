@@ -33,8 +33,9 @@
         <button class="primary">Preparar preenchimento</button>
       </form>
       <section id="review" class="card" hidden><h2>Prévia da nota</h2><p id="description"></p><p id="amount" class="amount"></p><p class="hint">Confira os dados antes de preencher cada etapa.</p></section>
-      <section class="card"><h2>Preencher NFS-e</h2><p class="hint">Abra a Emissão Completa na aba normal do Chrome. Confira cada etapa e avance no portal.</p>
+      <section class="card"><h2>Preencher NFS-e</h2><p class="hint">Abra a etapa Pessoas da Emissão Completa. Use o fluxo completo ou preencha uma etapa por vez.</p>
         <button id="open-portal" type="button">Abrir portal ↗</button><button id="inspect" type="button">Inspecionar campos</button><button id="download" type="button" hidden>Baixar diagnóstico</button>
+        <button id="fill-all" class="primary full-action" type="button" disabled>Preencher tudo e avançar</button>
         <div class="steps"><button type="button" data-step="people" disabled>Pessoas</button><button type="button" data-step="service" disabled>Serviço</button><button type="button" data-step="values" disabled>Valores</button></div>
         <p id="status" role="status">Prepare a nota para habilitar as etapas.</p><ul id="completed"></ul>
       </section>

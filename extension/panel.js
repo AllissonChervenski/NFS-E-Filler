@@ -15,7 +15,10 @@ function notice(message, ok = false) {
   $('#notice').style.color = ok ? '#1b5147' : '';
 }
 function currentInput() { return Object.fromEntries(new FormData(form)); }
-function actions() { document.querySelectorAll('[data-step]').forEach(button => button.disabled = !prepared || busy); }
+function actions() {
+  document.querySelectorAll('[data-step]').forEach(button => button.disabled = !prepared || busy);
+  $('#fill-all').disabled = !prepared || busy;
+}
 function invalidate() { prepared = null; $('#review').hidden = true; actions(); }
 function row(label, value) {
   const line = document.createElement('div');
@@ -129,6 +132,19 @@ document.querySelectorAll('[data-step]').forEach(button => button.onclick = asyn
   } catch (error) { $('#status').textContent = error.message; }
   finally { busy = false; actions(); }
 });
+$('#fill-all').onclick = async () => {
+  if (!prepared || busy) return;
+  busy = true; actions(); $('#status').textContent = 'Iniciando preenchimento completo…';
+  $('#completed').replaceChildren();
+  try {
+    const result = await send('fillAll', {prepared, selectors: settings.selectors});
+    $('#status').textContent = result.message;
+    $('#completed').replaceChildren(...result.completed.map(label => {
+      const li = document.createElement('li'); li.textContent = label; return li;
+    }));
+  } catch (error) { $('#status').textContent = error.message; }
+  finally { busy = false; actions(); }
+};
 chrome.runtime.onMessage.addListener(message => {
   if (message.type !== 'progress') return;
   $('#status').textContent = message.message;

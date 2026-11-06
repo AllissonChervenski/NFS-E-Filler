@@ -34,7 +34,9 @@ const labelText = el => {
 };
 const optionMatches = (text, value) => NFSePortalMatch.matches(text, value, field.key);
 const selectMatches = el => Array.from(el.options).filter(o => !o.disabled &&
-  (normalize(o.value) === normalize(field.value) || optionMatches(o.textContent, String(field.value))));
+  (normalize(o.value) === normalize(field.value) ||
+   optionMatches(o.value, String(field.value)) ||
+   optionMatches(o.textContent, String(field.value))));
 let candidates = [];
 // Um seletor conhecido nunca recai em outro CPF/CNPJ ou pergunta de endereço.
 const mapping = selector || field.portal_selector;
@@ -136,16 +138,29 @@ if (target.type === 'number') value = value.replace(',', '.');
 if (verifyOnly) {
   let confirmed;
   if (target.type === 'radio') confirmed = target.checked;
-  else if (target.tagName === 'SELECT') confirmed = selectMatches(target).some(option => option.selected);
+  else if (target.tagName === 'SELECT') {
+    const selected = Array.from(target.selectedOptions || (target.selectedIndex >= 0 ? [target.options[target.selectedIndex]] : []));
+    confirmed = selected.some(option => !option.disabled && (
+      normalize(option.value) === normalize(field.value) ||
+      optionMatches(option.value, String(field.value)) ||
+      optionMatches(option.textContent, String(field.value))
+    ));
+  }
   else confirmed = comparable(target.value) !== null && comparable(target.value) === comparable(value);
   return {status: target.isConnected && confirmed ? 'confirmed' : 'rejected', target: identity};
 }
 const fire = () => { target.dispatchEvent(new Event('input', {bubbles: true}));
-  target.dispatchEvent(new Event('change', {bubbles: true})); target.blur(); };
+  target.dispatchEvent(new Event('change', {bubbles: true}));
+  if (typeof target.onchange === 'function') target.onchange();
+  target.blur(); };
 if (target.type === 'radio') {
   if (!target.checked) {
     const label = radioLabels(target).find(visible);
     (visible(target) ? target : label).click();
+    target.dispatchEvent(new Event('input', {bubbles: true}));
+    target.dispatchEvent(new Event('change', {bubbles: true}));
+    if (typeof target.onchange === 'function') target.onchange();
+    if (window.jQuery) window.jQuery(target).trigger('change');
   }
   return {status: target.checked ? 'filled' : 'rejected', target: identity};
 }
@@ -161,7 +176,8 @@ if (target.tagName === 'SELECT') {
   if (target.value !== matches[0].value) {
     target.value = matches[0].value;
     fire();
-    if (window.jQuery && target.classList.contains('form-chosen')) {
+    if (window.jQuery) {
+      window.jQuery(target).trigger('change');
       window.jQuery(target).trigger('chosen:updated');
     }
   }

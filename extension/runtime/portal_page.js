@@ -57,7 +57,9 @@ const labelText = el => {
 };
 const optionMatches = (text, value) => NFSePortalMatch.matches(text, value, field.key);
 const selectMatches = el => Array.from(el.options).filter(o => !o.disabled &&
-  (normalize(o.value) === normalize(field.value) || optionMatches(o.textContent, String(field.value))));
+  (normalize(o.value) === normalize(field.value) ||
+   optionMatches(o.value, String(field.value)) ||
+   optionMatches(o.textContent, String(field.value))));
 let candidates = [];
 // Um seletor conhecido nunca recai em outro CPF/CNPJ ou pergunta de endereço.
 const mapping = selector || field.portal_selector;
@@ -159,16 +161,29 @@ if (target.type === 'number') value = value.replace(',', '.');
 if (verifyOnly) {
   let confirmed;
   if (target.type === 'radio') confirmed = target.checked;
-  else if (target.tagName === 'SELECT') confirmed = selectMatches(target).some(option => option.selected);
+  else if (target.tagName === 'SELECT') {
+    const selected = Array.from(target.selectedOptions || (target.selectedIndex >= 0 ? [target.options[target.selectedIndex]] : []));
+    confirmed = selected.some(option => !option.disabled && (
+      normalize(option.value) === normalize(field.value) ||
+      optionMatches(option.value, String(field.value)) ||
+      optionMatches(option.textContent, String(field.value))
+    ));
+  }
   else confirmed = comparable(target.value) !== null && comparable(target.value) === comparable(value);
   return {status: target.isConnected && confirmed ? 'confirmed' : 'rejected', target: identity};
 }
 const fire = () => { target.dispatchEvent(new Event('input', {bubbles: true}));
-  target.dispatchEvent(new Event('change', {bubbles: true})); target.blur(); };
+  target.dispatchEvent(new Event('change', {bubbles: true}));
+  if (typeof target.onchange === 'function') target.onchange();
+  target.blur(); };
 if (target.type === 'radio') {
   if (!target.checked) {
     const label = radioLabels(target).find(visible);
     (visible(target) ? target : label).click();
+    target.dispatchEvent(new Event('input', {bubbles: true}));
+    target.dispatchEvent(new Event('change', {bubbles: true}));
+    if (typeof target.onchange === 'function') target.onchange();
+    if (window.jQuery) window.jQuery(target).trigger('change');
   }
   return {status: target.checked ? 'filled' : 'rejected', target: identity};
 }
@@ -184,7 +199,8 @@ if (target.tagName === 'SELECT') {
   if (target.value !== matches[0].value) {
     target.value = matches[0].value;
     fire();
-    if (window.jQuery && target.classList.contains('form-chosen')) {
+    if (window.jQuery) {
+      window.jQuery(target).trigger('change');
       window.jQuery(target).trigger('chosen:updated');
     }
   }
@@ -213,16 +229,18 @@ const matchesValue = raw => NFSePortalMatch.matches(raw, value, fieldKey);
 if (action === 'verify') {
   const target = Array.from(document.querySelectorAll('[data-nfse-target]'))
     .find(el => el.dataset.nfseTarget === identity);
-  const selected = target?.tagName === 'SELECT' ? target.selectedOptions[0]?.textContent : target?.value;
-  return {status: target && matchesValue(selected || '') ? 'filled' : 'rejected'};
+  const selectedText = target?.tagName === 'SELECT' ? target.selectedOptions[0]?.textContent : target?.value;
+  const selectedVal = target?.value;
+  const ok = target && (matchesValue(selectedText || '') || matchesValue(selectedVal || ''));
+  return {status: ok ? 'filled' : 'rejected'};
 }
 if (action === 'input') {
-  const inputs = Array.from(document.querySelectorAll('.select2-container--open .select2-search__field, .select2-drop-active .select2-input, .chosen-with-drop .chosen-search input, .selectize-control .input-active input, .ts-wrapper.dropdown-active .ts-control input'))
+  const inputs = Array.from(document.querySelectorAll('.select2-container--open .select2-search__field, .select2-drop-active .select2-input, .chosen-with-drop .chosen-search input, .chosen-container-active .chosen-search input, .selectize-control .input-active input, .ts-wrapper.dropdown-active .ts-control input'))
     .filter(visible);
   return inputs.length === 1 ? {status: 'input', input: inputs[0]} : {status: 'missing'};
 }
 const options = Array.from(document.querySelectorAll(
-  '.select2-results__option[role=option], .select2-results__option[role=treeitem], .select2-result-selectable, [role=listbox] [role=option], .ui-menu-item, .chosen-with-drop .chosen-results .active-result, .selectize-dropdown [data-selectable], .ts-dropdown [data-selectable]'
+  '.select2-results__option[role=option], .select2-results__option[role=treeitem], .select2-result-selectable, [role=listbox] [role=option], .ui-menu-item, .chosen-with-drop .chosen-results .active-result, .chosen-container-active .chosen-results .active-result, .selectize-dropdown [data-selectable], .ts-dropdown [data-selectable]'
 )).filter(el => visible(el) && el.getAttribute('aria-disabled') !== 'true');
 const matches = options.filter(el => matchesValue(el.textContent));
 if (matches.length !== 1) return {status: matches.length ? 'ambiguous' : 'option_missing'};
@@ -235,6 +253,8 @@ const expectedOrigin = arguments[0] || 'https://www.nfse.gov.br';
 if (location.origin !== expectedOrigin || (expectedOrigin === 'https://www.nfse.gov.br' &&
     !location.pathname.startsWith('/EmissorNacional/DPS/'))) return {status: 'wrong_page'};
 const visible = el => !!el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden';
+const tomadorDocument = document.querySelector('#Tomador_Inscricao');
+const tomadorName = document.querySelector('#Tomador_Nome');
 const text = el => {
   const copy = el.cloneNode(true);
   copy.querySelectorAll('input, select, textarea, option, button, script, style, .tooltip, .help-block')
@@ -243,6 +263,15 @@ const text = el => {
 };
 return {
   status: 'inspected', path: location.pathname, iframe_count: document.querySelectorAll('iframe').length,
+  page_state: {
+    viewport_width: window.innerWidth, viewport_height: window.innerHeight,
+    ready_state: document.readyState, ajax_active: Number(window.jQuery?.active || 0),
+    loading_visible: !!(document.querySelector('#modalLoading') && visible(document.querySelector('#modalLoading'))),
+    advance_disabled: !!document.querySelector('#btnAvancar')?.disabled,
+    active_element: document.activeElement?.id || document.activeElement?.tagName?.toLowerCase() || '',
+    tomador_document_shape: tomadorDocument ? tomadorDocument.value.replace(/[A-Z0-9]/gi, 'X') : '',
+    tomador_name_present: !!tomadorName?.value.trim(),
+  },
   fields: Array.from(document.querySelectorAll('input:not([type=hidden]):not([type=password]):not([type=submit]):not([type=button]), select, textarea'))
     .map(el => {
       const aria = (el.getAttribute('aria-labelledby') || '').split(/\s+/)
@@ -259,5 +288,5 @@ return {
 };
 
 };
-return {fill, option, inspect};
+return {fill, option, inspect, matches: NFSePortalMatch.matches};
 })();

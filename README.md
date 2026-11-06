@@ -61,6 +61,15 @@ sem iniciar Python, ChromeDriver ou uma janela de navegador separada. Para insta
    uma única aba, clique em **Pessoas**, **Serviço** ou **Valores**. Confira e
    avance no portal; a emissão final continua manual.
 
+Também é possível iniciar na etapa **Pessoas** e clicar em **Preencher tudo e
+avançar**. A extensão confirma cada campo, avança para Serviço e termina na etapa
+Valores. A conferência e a emissão da NFS-e continuam manuais.
+
+Durante o preenchimento, a extensão usa a API de depuração do Chrome (`chrome.debugger`)
+para gerar eventos nativos de digitação e clique (necessários para que a máscara visual
+do CPF/CNPJ e os campos de busca registrem a entrada real do operador). Não deixe as
+ferramentas de desenvolvedor (DevTools) abertas na aba da NFS-e durante a execução.
+
 O campo do quarto é opcional. O painel oferece inspeção estrutural das telas e
 mapeamento avançado. Para trazer configurações da página antiga, abra
 **Configurações → Importar da página antiga** e selecione `data/settings.json`;

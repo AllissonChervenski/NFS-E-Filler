@@ -34,7 +34,7 @@ def wrapped(name):
     + wrapped("portal_options.js")
     + ";\nconst inspect = "
     + wrapped("portal_inspect.js")
-    + ";\nreturn {fill, option, inspect};\n})();\n",
+    + ";\nreturn {fill, option, inspect, matches: NFSePortalMatch.matches};\n})();\n",
     encoding="utf-8",
 )
 (OUT / "hotel_page.js").write_text(
